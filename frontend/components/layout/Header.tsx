@@ -14,6 +14,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Bell, LogOut, User, Settings } from 'lucide-react';
 import { toast } from 'sonner';
+import { LanguageSwitcher } from '@/components/language/LanguageSwitcher';
 
 import { useDisconnect } from 'wagmi';
 import { web3auth } from '@/lib/web3auth';
@@ -97,6 +98,7 @@ export function Header() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <LanguageSwitcher compact />
         </div>
       </div>
     </header>
