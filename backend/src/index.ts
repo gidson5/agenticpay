@@ -10,8 +10,10 @@ import { stellarRouter } from './routes/stellar.js';
 import { catalogRouter } from './routes/catalog.js';
 import { jobsRouter } from './routes/jobs.js';
 import { healthRouter } from './routes/health.js';
+import { slaRouter } from './routes/sla.js';
 import { startJobs, getJobScheduler } from './jobs/index.js';
 import { errorHandler, notFoundHandler, AppError } from './middleware/errorHandler.js';
+import { slaTrackingMiddleware } from './middleware/slaTracking.js';
 
 dotenv.config();
 
@@ -88,6 +90,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   });
 });
 
+// SLA Tracking middleware
+app.use(slaTrackingMiddleware);
+
 // Health & Readiness checks
 app.use(healthRouter);
 
@@ -106,6 +111,7 @@ apiV1Router.use('/invoice', invoiceLimiter, invoiceRouter);
 apiV1Router.use('/stellar', stellarRouter);
 apiV1Router.use('/catalog', catalogRouter);
 apiV1Router.use('/jobs', jobsRouter);
+apiV1Router.use('/sla', slaRouter);
 
 // Explicit URL-based mounting
 app.use('/api/v1', apiV1Router);
