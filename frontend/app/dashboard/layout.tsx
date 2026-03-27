@@ -1,8 +1,8 @@
 'use client';
 
 import { useAuthStore } from '@/store/useAuthStore';
-import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
 import { ErrorBoundary } from '@/components/errors/ErrorBoundary';
@@ -15,8 +15,6 @@ export default function DashboardLayout({
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const router = useRouter();
   const pathname = usePathname();
-  const mainRef = useRef<HTMLElement>(null);
-  const scrollPositions = useRef<Record<string, number>>({});
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -50,16 +48,16 @@ export default function DashboardLayout({
   }
 
   return (
-    <ErrorBoundary>
-      <div className="flex h-screen bg-gray-50">
-        <Sidebar />
-        <div className="flex-1 flex flex-col overflow-hidden lg:ml-64">
-          <Header />
-          <main ref={mainRef} className="flex-1 overflow-y-auto p-4 sm:p-6">
-            <ErrorBoundary>{children}</ErrorBoundary>
-          </main>
-        </div>
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar />
+      <div className="flex-1 flex flex-col overflow-hidden lg:ml-64">
+        <Header />
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <ErrorBoundary context="dashboard-page" resetKey={pathname}>
+            {children}
+          </ErrorBoundary>
+        </main>
       </div>
-    </ErrorBoundary>
+    </div>
   );
 }
