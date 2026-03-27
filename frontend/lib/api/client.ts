@@ -44,18 +44,14 @@ function shouldRetryStatus(status: number): boolean {
   return status >= 500 || status === 429;
 }
 
+// FIX: Robust check for AbortError to prevent test timeouts
 function shouldRetryError(error: unknown): boolean {
   if (error instanceof ApiError) {
     return shouldRetryStatus(error.status);
   }
 
-  if (
-    (error instanceof Error && error.name === 'AbortError') ||
-    (typeof error === 'object' &&
-      error !== null &&
-      'name' in error &&
-      error.name === 'AbortError')
-  ) {
+  const err = normalizeError(error);
+  if (err.name === 'AbortError' || err.message.includes('aborted')) {
     return false;
   }
 
@@ -141,7 +137,7 @@ export async function apiCall<T = unknown>(
     throw new OfflineActionQueuedError(
       'You are offline. This action has been queued and will sync when the connection returns.',
       endpoint,
-      // @ts-expect-error - action.id may not be correctly typed in current SDK version
+      // @ts-expect-error - action.id may not be correctly typed
       action.id
     );
   }
