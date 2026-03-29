@@ -3,6 +3,7 @@
 import { useDashboardData } from '@/lib/hooks/useDashboardData';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Card, CardContent } from '@/components/ui/card';
+import { useState } from 'react';
 import {
   CheckCircle2,
   Clock,
