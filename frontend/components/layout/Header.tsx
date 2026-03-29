@@ -37,6 +37,10 @@ import { ThemeSettingsModal } from '@/components/theme/ThemeSettingsModal';
 import { TimezoneSettingsModal } from '@/components/settings/TimezoneSettingsModal';
 import { getBrowserTimeZone, isValidTimeZone } from '@/lib/utils';
 
+// Our new CommandMenu!
+import { CommandMenu } from './CommandMenu';
+
+// I built the isolated NetworkIndicator component right here
 /* ---------------- TYPES ---------------- */
 type BreadcrumbItemType = {
   label: string;
@@ -152,6 +156,8 @@ export function Header() {
           {/* RIGHT */}
           <div className="flex items-center gap-4">
             <NetworkIndicator />
+            
+            <CommandMenu />
 
             {/* Notifications */}
             <Button variant="ghost" size="icon">
