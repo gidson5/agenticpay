@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react'; // Added useRef here
@@ -16,9 +17,8 @@ export default function DashboardLayout({
   const router = useRouter();
   const pathname = usePathname();
 
-  // FIX: Define the missing references
-  const mainRef = useRef<HTMLDivElement>(null);
-  const scrollPositions = useRef<Record<string, number>>({});
+  const mainRef = React.useRef<HTMLDivElement>(null);
+  const scrollPositions = React.useRef<Record<string, number>>({});
 
   useEffect(() => {
     if (!isAuthenticated) {

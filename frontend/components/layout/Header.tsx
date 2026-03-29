@@ -16,6 +16,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Bell, LogOut, User, Settings, Sun, Moon, Clock, CloudOff, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
+import { LanguageSwitcher } from '@/components/language/LanguageSwitcher';
 import { useDisconnect, useAccount } from 'wagmi';
 import { web3auth } from '@/lib/web3auth';
 import {
@@ -67,7 +68,6 @@ export function Header() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // FIX: No more useEffect/useState for breadcrumbs to satisfy linter
   const breadcrumbs = getDashboardBreadcrumbs(pathname);
 
   const [themeSettingsOpen, setThemeSettingsOpen] = useState(false);
@@ -129,6 +129,8 @@ export function Header() {
                   </span>
                 </div>
               )}
+
+              <LanguageSwitcher />
 
               <Button variant="ghost" size="icon" className="relative">
                 <Bell className="h-5 w-5" />

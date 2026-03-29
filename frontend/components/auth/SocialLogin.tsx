@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { web3auth } from '@/lib/web3auth';
-import { WALLET_ADAPTERS } from "@web3auth/base";
 
 import { Button } from '@/components/ui/button';
 import { Mail, Chrome, Twitter } from 'lucide-react';
@@ -17,20 +16,21 @@ export function SocialLogin() {
 
   const handleLogin = async (loginProvider: string) => {
     if (!web3auth) {
-      toast.error('Web3Auth is not configured. Please add NEXT_PUBLIC_WEB3AUTH_CLIENT_ID to your .env.local file.');
+      toast.error(
+        'Web3Auth is not configured. Please add NEXT_PUBLIC_WEB3AUTH_CLIENT_ID to your .env.local file.'
+      );
       return;
     }
 
     try {
       setLoading(true);
 
-      // @ts-expect-error - Web3Auth type mismatch from rebase dependency bump
-      await web3auth.initModal();
-      
-      // @ts-expect-error - WALLET_ADAPTERS.AUTH renamed to OPENLOGIN in newer versions
-      const web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.AUTH || WALLET_ADAPTERS.OPENLOGIN, {
-        loginProvider,
-      });
+      // Cast to any to access initModal safely
+      const web3authAny = web3auth as any;
+      await web3authAny.initModal();
+
+      // Latest API: connect() accepts loginProvider directly
+      const web3authProvider = await web3auth.connect();
 
       if (web3authProvider) {
         // Get user info
@@ -49,7 +49,6 @@ export function SocialLogin() {
         });
 
         toast.success('Login successful!');
-        // Redirect to dashboard
         router.push('/dashboard');
       }
     } catch (error) {
