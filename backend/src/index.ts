@@ -22,6 +22,7 @@ import { slaTrackingMiddleware } from './middleware/slaTracking.js';
 import { requestIdMiddleware, REQUEST_ID_HEADER } from './middleware/requestId.js';
 import { validateEnv, config as getConfig } from './config/env.js';
 import { flagsRouter } from './routes/flags.js';
+import { kybRouter } from './routes/kyb.js';
 
 // Validate environment variables at startup
 validateEnv();
@@ -216,6 +217,7 @@ apiV1Router.use('/sla', slaRouter);
 apiV1Router.use('/legacy', legacyRouter);
 // Feature flag admin — inspect & override flags at runtime
 apiV1Router.use('/flags', flagsRouter);
+apiV1Router.use('/kyb', kybRouter);
 
 app.use('/api/v1', apiV1Router);
 
