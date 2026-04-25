@@ -24,6 +24,7 @@ import { validateEnv, config as getConfig } from './config/env.js';
 import { flagsRouter } from './routes/flags.js';
 import { kybRouter } from './routes/kyb.js';
 import { batchRouter } from './routes/batch.js';
+import { relayerRouter } from './routes/relayer.js';
 
 // Validate environment variables at startup
 validateEnv();
@@ -221,6 +222,7 @@ apiV1Router.use('/legacy', legacyRouter);
 apiV1Router.use('/flags', flagsRouter);
 apiV1Router.use('/kyb', kybRouter);
 apiV1Router.use('/batch', batchRouter);
+apiV1Router.use('/relayer', relayerRouter);
 
 app.use('/api/v1', apiV1Router);
 
