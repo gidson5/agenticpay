@@ -40,6 +40,9 @@ import { ipAllowlistMiddleware, initIpAllowlist } from './middleware/ip-allowlis
 import { notificationsRouter } from './routes/notifications.js';
 import { auditRouter } from './routes/audit.js';
 import { hedgingRouter } from './routes/hedging.js';
+import { complianceRouter } from './routes/compliance.js';
+import { disputeRoutes } from './disputes/index.js';
+import { disputeService } from './disputes/disputeService.js';
 import http from 'node:http';
 import { attachWebSocketServer } from './websocket/server.js';
 import { createWebSocketRouter } from './routes/websocket.js';
@@ -262,7 +265,6 @@ apiV1Router.use('/jobs', jobsRouter);
 apiV1Router.use('/queue', queueRouter);
 apiV1Router.use('/sla', slaRouter);
 apiV1Router.use('/legacy', legacyRouter);
-// Feature flag admin — inspect & override flags at runtime
 apiV1Router.use('/flags', flagsRouter);
 apiV1Router.use('/kyb', kybRouter);
 apiV1Router.use('/batch', batchRouter);
@@ -271,17 +273,12 @@ apiV1Router.use('/queue/payments', paymentQueueRouter);
 apiV1Router.use('/splits', splitsRouter);
 apiV1Router.use('/refunds', refundsRouter);
 apiV1Router.use('/allowances', allowancesRouter);
-// Email delivery system
+apiV1Router.use('/disputes', disputeRoutes);
 apiV1Router.use('/emails', emailRouter);
-// Portfolio/wallet aggregation
 apiV1Router.use('/portfolio', portfolioRouter);
-// Backup system
 apiV1Router.use('/backup', backupRouter);
-// IP allowlist management
 apiV1Router.use('/ip-allowlist', ipAllowlistRouter);
-// Push notifications
 apiV1Router.use('/push', pushRouter);
-// Stripe card payments
 apiV1Router.use('/stripe', stripeRouter);
 apiV1Router.use('/webhooks', webhooksRouter);
 apiV1Router.use('/fraud-detection', fraudDetectionRouter);
@@ -292,16 +289,9 @@ apiV1Router.use('/multisig', multisigRouter);
 
 app.use('/api/v1', ipAllowlistMiddleware(), apiV1Router);
 
-// Notification system routes
 app.use('/api/v1/notifications', notificationsRouter);
-
-// Audit logging routes
 app.use('/api/v1/audit', auditRouter);
-
-// Currency hedging routes
 app.use('/api/v1/hedging', hedgingRouter);
-
-// SOC 2 / compliance evidence endpoints
 app.use('/api/v1/compliance', complianceRouter);
 
 // Payment receipt NFTs
@@ -354,6 +344,12 @@ if (config.queue.enabled) {
   paymentQueue.start();
 }
 startWebhookWorker();
+
+// Auto-escalation cron
+setInterval(async () => {
+  const count = await disputeService.processEscalations();
+  if (count > 0) console.log(`Escalated ${count} disputes`);
+}, 5 * 60 * 1000);
 
 const server = http.createServer(app);
 const wsServer = attachWebSocketServer({ server, options: { path: '/ws' } });
