@@ -58,7 +58,7 @@ import { portfolioRouter } from './routes/portfolio.js';
 import { backupRouter } from './routes/backup.js';
 import { pushRouter } from './routes/push.js';
 import { ipAllowlistRouter } from './routes/ip-allowlist.js';
-import { stripeRouter } from './routes/stripe.js';
+import { gdprRouter } from './routes/gdpr.js';
 import { ipAllowlistMiddleware, initIpAllowlist } from './middleware/ip-allowlist.js';
 import { notificationsRouter } from './routes/notifications.js';
 import { auditRouter } from './routes/audit.js';
@@ -312,13 +312,8 @@ apiV1Router.use('/portfolio', portfolioRouter);
 apiV1Router.use('/backup', backupRouter);
 apiV1Router.use('/ip-allowlist', ipAllowlistRouter);
 apiV1Router.use('/push', pushRouter);
-apiV1Router.use('/stripe', stripeRouter);
-apiV1Router.use('/webhooks', webhooksRouter);
-apiV1Router.use('/fraud-detection', fraudDetectionRouter);
-apiV1Router.use('/bridge', bridgeRouter);
-apiV1Router.use('/tokenization', tokenizationRouter);
-apiV1Router.use('/escrow', escrowRouter);
-apiV1Router.use('/multisig', multisigRouter);
+// GDPR data subject rights
+apiV1Router.use('/gdpr', gdprRouter);
 
 app.use('/api/v1', ipAllowlistMiddleware(), apiV1Router);
 
